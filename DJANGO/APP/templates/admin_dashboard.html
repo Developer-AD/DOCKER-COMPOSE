@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}
+  Admin Dashboard
+{% endblock title %}
+
+{% block content %}
+    <div class="content">
+        <center>
+            <h1>Welcome to Admin, {{request.user}}</h1>
+        </center>
+        <hr>
+        <h2>Student Details</h2>
+        <!-- <hr> -->
+        <div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Age</th>
+                        <th>Profile</th>
+                        <!-- <th>Actions</th> -->
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                    <tr>
+                        <td>{{student.name}}</td>
+                        <td>{{student.email}}</td>
+                        <td>{{student.phone}}</td>
+                        <td>{{student.age}}</td>
+                        <td>
+                            {% if student.photo %}
+                            <img src="{{student.photo.url}}" width="30px" height="30px" alt="">
+                            {% endif %}
+                        </td>
+                        <!-- <td>
+                                <a href="/student-edit/{{student.id}}/">
+                                    <i>edit</i>
+                                </a>
+    
+                                <a href="/student-delete/{{student.id}}/">
+                                    <i>delete</i>
+                                </a>
+                            </td> -->
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock content %}

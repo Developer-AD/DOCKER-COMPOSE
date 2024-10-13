@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    command: >
+      sh -c "python manage.py makemigrations &&
+             python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"  # For development, auto-reload enabled
+
+    # command: gunicorn --bind 0.0.0.0:8000 DJANGO.wsgi:application # Use this for production
+    volumes:
+      - .:/app
+      - static_volume:/app/staticfiles  # Static files
+      - ./media:/app/media  # Media files
+    expose:
+      - "8000"
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db  # Ensure PostgreSQL starts first
+    environment:
+      - POSTGRES_DB=TenantDB
+      - POSTGRES_USER=abhishek
+      - POSTGRES_PASSWORD=abhishek
+      - POSTGRES_HOST=db  # Service name of the database
+
+  nginx:
+    image: nginx:alpine
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - static_volume:/app/staticfiles
+      - ./media:/app/media
+    ports:
+      - "80:80"
+
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: TenantDB
+      POSTGRES_USER: abhishek
+      POSTGRES_PASSWORD: abhishek
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+
+volumes:
+  static_volume:
+  postgres_data:  # Volume for PostgreSQL data persistence
